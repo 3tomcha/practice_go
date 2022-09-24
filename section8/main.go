@@ -5,18 +5,14 @@ import (
 	"fmt"
 )
 
-type user struct {
-	UserID    string   `json: "user_id"`
-	UserName  string   `json: "user_name"`
-	Languages []string `json: "language"`
+type FormInput struct {
+	Name        string `json:"name"`
+	CompanyName string `json:"company_name,omitempty"`
 }
 
 func main() {
-	u := user{
-		UserID:    "001",
-		UserName:  "gopher",
-		Languages: []string{},
-	}
-	b, _ := json.Marshal(u)
+	in := FormInput{Name: "山田太郎"}
+
+	b, _ := json.Marshal(in)
 	fmt.Println(string(b))
 }
