@@ -13,8 +13,9 @@ type user struct {
 
 func main() {
 	u := user{
-		UserID:   "001",
-		UserName: "gopher",
+		UserID:    "001",
+		UserName:  "gopher",
+		Languages: []string{},
 	}
 	b, _ := json.Marshal(u)
 	fmt.Println(string(b))
