@@ -1,25 +1,22 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
-type ip struct {
-	Origin string `json: "origin"`
-	URL    string `json: "url"`
+type user struct {
+	UserID   string
+	UserName string
 }
 
 func main() {
-	s := `{
-		"origin": "255.255.255.255",
-		"url": "https://httpbin.org/get"
-	}`
-
-	var resp ip
-	if err := json.Unmarshal([]byte(s), &resp); err != nil {
-		log.Fatal(err)
+	var b bytes.Buffer
+	u := user{
+		UserID:   "001",
+		UserName: "gopher",
 	}
-	fmt.Printf("%+v\n", resp)
+	_ = json.NewEncoder(&b).Encode(u)
+	fmt.Printf("%v\n", b.String())
 }
