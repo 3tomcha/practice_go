@@ -11,7 +11,7 @@ import (
 
 type Book struct {
 	Title string `validate:"required"`
-	Prize string `validate:"required"`
+	Price int    `validate:"required"`
 }
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 		var ve validator.ValidationErrors
 		if errors.As(err, &ve) {
 			for _, fe := range ve {
-				fmt.Printf("フィールド %s が %s 違反です（値:%v）\n", fe.Field(), fe.Tag())
+				fmt.Printf("フィールド %s が %s 違反です（値:%v）\n", fe.Field(), fe.Tag(), fe.Value())
 			}
 		}
 	}
