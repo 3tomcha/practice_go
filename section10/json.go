@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Comment struct {
-	Message  string
-	UserName string
+	Message  string `validate:"required,min=1,max=148"`
+	UserName string `validate:"required,min=1,max=15"`
 }
 
 func main() {
@@ -32,6 +34,11 @@ func main() {
 			var c Comment
 			if err := json.NewDecoder(r.Body).Decode((&c)); err != nil {
 				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
+				return
+			}
+			validate := validator.New()
+			if err := validate.Struct(c); err != nil {
+				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusBadRequest)
 				return
 			}
 			mutex.Lock()
