@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/go-playground/validator/v10"
@@ -38,7 +40,19 @@ func main() {
 			}
 			validate := validator.New()
 			if err := validate.Struct(c); err != nil {
-				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusBadRequest)
+				var out []string
+				var ve validator.ValidationErrors
+				if errors.As(err, &ve) {
+					for _, fe := range ve {
+						switch fe.Field() {
+						case "Message":
+							out = append(out, fmt.Sprintf("Messageは1〜140文字です"))
+						case "UserName":
+							out = append(out, fmt.Sprintf("UserNameは1〜15文字です"))
+						}
+					}
+				}
+				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, strings.Join(out, ",")), http.StatusBadRequest)
 				return
 			}
 			mutex.Lock()
