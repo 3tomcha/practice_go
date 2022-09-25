@@ -1,27 +1,32 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"strconv"
+	"time"
 )
 
-type Bottle struct {
-	Name  string `json:"name"`
-	Price int    `json:"price,omitempty"`
-	KCal  *int   `json:"kcal,omitempty"`
+type Record struct {
+	ProcessID string `json: "process_id"`
+	DeletedAt JSTime `json: "deleted_at"`
+}
+
+type JSTime time.Time
+
+func (t JSTime) MarshalJSON() ([]byte, error) {
+	tt := time.Time(t)
+	if tt.IsZero() {
+		return []byte("null"), nil
+	}
+	v := strconv.Itoa(int(tt.UnixMilli()))
+	return []byte(v), nil
 }
 
 func main() {
-	b := Bottle{
-		Name:  "ミネラルウォーター",
-		Price: 0,
-		KCal:  Int(0),
+	r := &Record{
+		ProcessID: "0001",
+		DeletedAt: JSTime(time.Now()),
 	}
-
-	out, _ := json.Marshal(b)
-	fmt.Println(string(out))
-}
-
-func Int(v int) *int {
-	return &v
+	b, _ := json.MarshalJSON(&r)
+	fmt.Println(string(b))
 }
