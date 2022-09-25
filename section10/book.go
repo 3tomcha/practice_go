@@ -11,7 +11,7 @@ import (
 
 type Book struct {
 	Title string `validate:"required"`
-	Price int    `validate:"required"`
+	Price *int   `validate:"required"`
 }
 
 func main() {
